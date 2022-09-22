@@ -20,6 +20,7 @@ const onError = function (event: Event) {
 
 ws.onopen = () => {
   console.log("Connected to server");
+  ws.send("Hello from client");
 };
 
 ws.onclose = () => {
