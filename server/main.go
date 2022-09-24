@@ -7,20 +7,29 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/olahol/melody"
+	log "github.com/sirupsen/logrus"
 )
 
 var m *melody.Melody
+
+// sessionMap is a map of session ids to melody sessions.
 var sessionMap sync.Map
+
+func init() {
+	log.SetFormatter(&log.JSONFormatter{})
+}
 
 func main() {
 	r := gin.Default()
 	m = melody.New()
+	// add a ping handler with gin
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
 
+	// add a websocket handler with gin, but we are using melody to handle the requests
 	r.GET("/ws", func(c *gin.Context) {
 		_ = m.HandleRequest(c.Writer, c.Request)
 	})
@@ -44,13 +53,15 @@ func connectionHandler(s *melody.Session) {
 	sessionMap.Store(id, s)
 	s.Set("id", id)
 	// replay the message to the client
-	_ = s.Write([]byte("Hello"))
+	_ = s.Write([]byte("welcome to chatting hall"))
+	_ = m.BroadcastOthers([]byte("new member joined chatting hall"), s)
 }
 
 // messageHandler is called when a message is received from a client.
 func messageHandler(s *melody.Session, msg []byte) {
 	fmt.Println(string(msg))
 	_ = s.Write(msg)
+	_ = m.BroadcastOthers([]byte(string(msg)), s)
 }
 
 // disconnectionHandler is called when a websocket connection is closed.

@@ -7,26 +7,9 @@
 </template>
 
 <script setup lang="ts">
-const ws = new WebSocket("ws://localhost:8888/ws");
+import { initWebsocket } from "./network/websocket";
 
-const onMessage = function (event: MessageEvent) {
-  console.log(event.data);
-};
-
-const onError = function (event: Event) {
-  console.log(event);
-};
-
-ws.onopen = () => {
-  console.log("Connected to server");
-  ws.send("Hello from client");
-};
-
-ws.onclose = () => {
-  console.log("connection closed");
-};
-ws.onmessage = onMessage;
-ws.onerror = onError;
+initWebsocket();
 </script>
 
 <style lang="scss">
