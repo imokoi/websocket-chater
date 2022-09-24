@@ -1,0 +1,25 @@
+<template>
+  <div>
+    <el-scrollbar height="800px">
+      <p v-for="item in 50" :key="item" class="scrollbar-item">
+        {{ item }}
+      </p>
+    </el-scrollbar>
+  </div>
+</template>
+
+<script setup lang="ts"></script>
+
+<style lang="scss">
+.scrollbar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
+}
+</style>
