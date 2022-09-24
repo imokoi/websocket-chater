@@ -24,8 +24,7 @@ const onClose = (event: CloseEvent) => {
 };
 
 const onMessage = (event: MessageEvent) => {
-  const data = JSON.parse(event.data);
-  console.log(data);
+  console.log(event.data);
 };
 
 const onError = (event: Event) => {

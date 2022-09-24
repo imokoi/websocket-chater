@@ -43,7 +43,6 @@ import MessageView from "../components/MessageView.vue";
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: aquamarine;
   height: 80%;
 
   .message-box {

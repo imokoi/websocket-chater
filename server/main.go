@@ -52,8 +52,8 @@ func connectionHandler(s *melody.Session) {
 	id := uuid.NewString()
 	sessionMap.Store(id, s)
 	s.Set("id", id)
-	// replay the message to the client
-	_ = s.Write([]byte("welcome to chatting hall"))
+
+	// send this message to other clients
 	_ = m.BroadcastOthers([]byte("new member joined chatting hall"), s)
 }
 

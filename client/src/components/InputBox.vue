@@ -9,7 +9,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { defineEmits, ref } from "vue";
+const emits = defineEmits(["send-message", "newRoom"]);
 const input = ref("");
 
 const newRoom = () => {
@@ -17,7 +18,7 @@ const newRoom = () => {
 };
 
 const send = () => {
-  console.log(input.value);
+  emits("send-message", input.value);
 };
 </script>
 

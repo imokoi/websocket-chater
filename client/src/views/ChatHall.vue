@@ -8,10 +8,10 @@
         </el-aside>
         <el-container class="main-container">
           <el-main class="message-box">
-            <MessageView />
+            <MessageView :messages=messages />
           </el-main>
           <el-footer class="input-box">
-            <InputBox />
+            <InputBox @send-message=sendMessage />
           </el-footer>
         </el-container>
         <el-aside class="side">
@@ -24,8 +24,24 @@
 
 <script setup lang="ts">
 import InputBox from "@/components/InputBox.vue";
-import ListView from "../components/ListView.vue";
-import MessageView from "../components/MessageView.vue";
+import ListView from "@/components/ListView.vue";
+import MessageView from "@/components/MessageView.vue";
+import store, { GetterCommands } from "@/store";
+import { ref } from "vue";
+
+const messages = ref([] as string[])
+
+const ws = store.getters[GetterCommands.GET_WS];
+
+if (!ws) {
+  console.log("ws is not initialized");
+}
+
+const sendMessage = (msg: string) => {
+  console.log(msg);
+  messages.value.push(msg);
+  ws.send(msg);
+}
 </script>
 
 <style lang="scss">
@@ -46,7 +62,6 @@ import MessageView from "../components/MessageView.vue";
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: aquamarine;
   height: 80%;
 
   .message-box {
