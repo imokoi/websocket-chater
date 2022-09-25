@@ -35,7 +35,7 @@ import MessageView from "../components/MessageView.vue";
   width: 100%;
 
   .side {
-    height: 600px;
+    height: 400px;
     width: 200px;
   }
 }

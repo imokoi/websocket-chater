@@ -26,18 +26,15 @@
 import InputBox from "@/components/InputBox.vue";
 import ListView from "@/components/ListView.vue";
 import MessageView from "@/components/MessageView.vue";
-import store, { GetterCommands } from "@/store";
+import store from "@/store";
 import { ref } from "vue";
 
 const messages = ref([] as string[])
 
-const ws = store.getters[GetterCommands.GET_WS];
-
-if (!ws) {
-  console.log("ws is not initialized");
-}
+const ws = store.state.ws;
 
 const sendMessage = (msg: string) => {
+  if (!ws) return;
   console.log(msg);
   messages.value.push(msg);
   ws.send(msg);
@@ -54,7 +51,7 @@ const sendMessage = (msg: string) => {
   width: 100%;
 
   .side {
-    height: 600px;
+    height: 400px;
     width: 200px;
   }
 }
@@ -62,7 +59,7 @@ const sendMessage = (msg: string) => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 80%;
+  height: 400px;
 
   .message-box {
     flex: 2;

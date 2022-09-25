@@ -25,6 +25,7 @@ const onClose = (event: CloseEvent) => {
 
 const onMessage = (event: MessageEvent) => {
   console.log(event.data);
+  store.dispatch(ActionCommands.NEW_MESSAGE, event.data);
 };
 
 const onError = (event: Event) => {
