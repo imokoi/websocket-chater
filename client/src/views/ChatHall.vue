@@ -11,7 +11,10 @@
             <MessageView :messages=messages />
           </el-main>
           <el-footer class="input-box">
-            <InputBox @send-message=sendMessage />
+            <InputBox
+            @send-message=sendMessage
+            @new-room=newRoom
+            />
           </el-footer>
         </el-container>
         <el-aside class="side">
@@ -26,6 +29,7 @@
 import InputBox from "@/components/InputBox.vue";
 import ListView from "@/components/ListView.vue";
 import MessageView from "@/components/MessageView.vue";
+import router from "@/router";
 import store from "@/store";
 import { ref } from "vue";
 
@@ -39,6 +43,10 @@ const sendMessage = (msg: string) => {
   messages.value.push(msg);
   ws.send(msg);
 }
+
+const newRoom = () => {
+  router.push({ name: "chat-room" });
+};
 </script>
 
 <style lang="scss">

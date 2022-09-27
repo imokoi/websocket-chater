@@ -10,11 +10,11 @@
 
 <script lang="ts" setup>
 import { defineEmits, ref } from "vue";
-const emits = defineEmits(["send-message", "newRoom"]);
+const emits = defineEmits(["send-message", "new-room"]);
 const input = ref("");
 
 const newRoom = () => {
-  console.log("new room");
+  emits("new-room");
 };
 
 const send = () => {
