@@ -64,7 +64,7 @@ func messageHandler(s *melody.Session, msg []byte) {
 	case common.HallChat:
 		HallChatHandler(s, message)
 	case common.NewRoom:
-		fmt.Println("NewRoom")
+		NewRoomHandler(s, message)
 	default:
 		_ = s.Write([]byte("unknown message"))
 	}

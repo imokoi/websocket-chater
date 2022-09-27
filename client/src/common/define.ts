@@ -7,6 +7,6 @@ export enum MessageCode {
     JoinRoom = 5,
     LeaveRoom = 6,
     RoomChat = 7,
-    GetRooms = 8,
+    AllRooms = 8,
     GetPlayers = 9,
 }

@@ -9,6 +9,6 @@ const (
 	JoinRoom
 	LeaveRoom
 	RoomChat
-	GetRooms
+	AllRooms
 	GetPlayers
 )

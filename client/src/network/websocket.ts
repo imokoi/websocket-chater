@@ -34,6 +34,9 @@ const onMessage = (event: MessageEvent) => {
     case MessageCode.Success:
       store.dispatch(ActionCommands.NEW_MESSAGE, message.data);
       break;
+    case MessageCode.AllRooms:
+      console.log(message.data);
+      break;
     default:
       console.log("Unknown message code");
   }

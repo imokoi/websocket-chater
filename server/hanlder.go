@@ -16,6 +16,12 @@ func SendToClient(s *melody.Session, msg []byte) {
 	}
 }
 
+func BroadcastAll(msg []byte) {
+	if err := m.Broadcast(msg); err != nil {
+		log.Error(err)
+	}
+}
+
 func BroadcastOthers(s *melody.Session, msg []byte) {
 	if err := m.BroadcastOthers(msg, s); err != nil {
 		log.Error(err)
@@ -46,6 +52,7 @@ func HallChatHandler(s *melody.Session, message model.Message) {
 	BroadcastOthers(s, msg)
 }
 
+// NewRoomHandler create a new room and broadcast to all clients
 func NewRoomHandler(s *melody.Session, message model.Message) {
 	playerId, exist := s.Get("id")
 	if !exist {
@@ -66,6 +73,17 @@ func NewRoomHandler(s *melody.Session, message model.Message) {
 		Host:           player.(model.Player),
 	}
 	roomMap.Store(roomId, room)
+	var rooms []model.Room
+	roomMap.Range(func(key, value interface{}) bool {
+		fmt.Println(key, value)
+		rooms = append(rooms, value.(model.Room))
+		return true
+	})
+
+	msgToClient, _ := model.NewMessage(common.NewRoom, room)
+	SendToClient(s, msgToClient)
+	msgToOthers, _ := model.NewMessage(common.AllRooms, rooms)
+	BroadcastOthers(s, msgToOthers)
 }
 
 // connectionHandler is called when a new websocket connection is established.

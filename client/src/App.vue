@@ -1,13 +1,14 @@
 <template>
   <nav>
-    <router-link to="/">Chat Hall</router-link> |
+    <router-link to="/">Chat Hall</router-link>
+    |
     <router-link to="/chat-room">Chat room</router-link>
   </nav>
-  <router-view />
+  <router-view/>
 </template>
 
 <script setup lang="ts">
-import { initWebsocket } from "./network/websocket";
+import { initWebsocket } from './network/websocket';
 
 initWebsocket();
 </script>
