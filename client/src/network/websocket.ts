@@ -1,3 +1,4 @@
+import { MessageCode } from "@/common/define";
 import store, { ActionCommands } from "@/store";
 
 const socketUrl = "ws://localhost:8888/ws";
@@ -25,7 +26,17 @@ const onClose = (event: CloseEvent) => {
 
 const onMessage = (event: MessageEvent) => {
   console.log(event.data);
-  store.dispatch(ActionCommands.NEW_MESSAGE, event.data);
+  const message = JSON.parse(event.data);
+  switch (message.code) {
+    case MessageCode.HallChat:
+      store.dispatch(ActionCommands.NEW_MESSAGE, message.data);
+      break;
+    case MessageCode.Success:
+      store.dispatch(ActionCommands.NEW_MESSAGE, message.data);
+      break;
+    default:
+      console.log("Unknown message code");
+  }
 };
 
 const onError = (event: Event) => {

@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"server/common"
+	"server/model"
 	"sync"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/olahol/melody"
 	log "github.com/sirupsen/logrus"
 )
@@ -14,6 +16,9 @@ var m *melody.Melody
 
 // sessionMap is a map of session ids to melody sessions.
 var sessionMap sync.Map
+var roomMap sync.Map
+var playerMap sync.Map
+var playerCounter int
 
 func init() {
 	log.SetFormatter(&log.JSONFormatter{})
@@ -47,21 +52,22 @@ func pongHandler(s *melody.Session) {
 	_ = s.Write([]byte("Pong"))
 }
 
-// connectionHandler is called when a new websocket connection is established.
-func connectionHandler(s *melody.Session) {
-	id := uuid.NewString()
-	sessionMap.Store(id, s)
-	s.Set("id", id)
-
-	// send this message to other clients
-	_ = m.BroadcastOthers([]byte("new member joined chatting hall"), s)
-}
-
 // messageHandler is called when a message is received from a client.
 func messageHandler(s *melody.Session, msg []byte) {
-	fmt.Println(string(msg))
-	_ = s.Write(msg)
-	_ = m.BroadcastOthers([]byte(string(msg)), s)
+	var message model.Message
+	if err := json.Unmarshal(msg, &message); err != nil {
+		errMsg, _ := model.NewErrorMessage(err)
+		s.Write(errMsg)
+	}
+
+	switch message.Code {
+	case common.HallChat:
+		HallChatHandler(s, message)
+	case common.NewRoom:
+		fmt.Println("NewRoom")
+	default:
+		_ = s.Write([]byte("unknown message"))
+	}
 }
 
 // disconnectionHandler is called when a websocket connection is closed.

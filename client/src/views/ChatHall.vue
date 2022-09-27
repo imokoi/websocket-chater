@@ -26,6 +26,7 @@
 </template>
 
 <script setup lang="ts">
+import { MessageCode } from "@/common/define";
 import InputBox from "@/components/InputBox.vue";
 import ListView from "@/components/ListView.vue";
 import MessageView from "@/components/MessageView.vue";
@@ -39,9 +40,11 @@ const ws = store.state.ws;
 
 const sendMessage = (msg: string) => {
   if (!ws) return;
-  console.log(msg);
   messages.value.push(msg);
-  ws.send(msg);
+  ws.send(JSON.stringify({
+    code: MessageCode.HallChat,
+    data: msg,
+  }));
 }
 
 const newRoom = () => {
