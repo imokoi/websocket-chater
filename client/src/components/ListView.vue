@@ -1,17 +1,17 @@
 <template>
   <div>
-    <el-scrollbar class="scrollbar">
-      <div v-if="listType==='room'">
-        <p v-for="item in roomList" :key="item.id" class="scrollbar-item">
-          {{ item.id }}
-        </p>
-      </div>
-      <div v-else>
-        <p v-for="item in playerList" :key="item.id" class="scrollbar-item">
-          {{ item.name }}
-        </p>
-      </div>
-    </el-scrollbar>
+    <div v-if="listType==='player'">Player List:</div>
+    <div v-else>Room List: </div>
+    <div v-if="listType==='room'">
+      <p v-for="item in roomList" :key="item.id" class="scrollbar-item">
+        <el-button type="text" @click="joinRoom(item.id)">{{ item.id }}</el-button>
+      </p>
+    </div>
+    <div v-else>
+      <p v-for="item in playerList" :key="item.id" class="scrollbar-item">
+        {{ item.name }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -35,6 +35,11 @@ defineProps({
     required: false
   }
 });
+
+const emits = defineEmits(["join-room"]);
+const joinRoom = (id: string) => {
+  emits("join-room", id);
+};
 </script>
 
 <style lang="scss">

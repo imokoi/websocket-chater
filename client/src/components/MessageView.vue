@@ -1,7 +1,7 @@
 <template>
   <div class="message-view-container">
     <el-scrollbar height="400px">
-      <p v-for="(item, index) in store.state.messages" :key=index class="message-scrollbar-item">
+      <p v-for="(item, index) in messages" :key=index class="message-scrollbar-item">
         {{ item }}
       </p>
     </el-scrollbar>
@@ -9,7 +9,6 @@
 </template>
 
 <script setup lang="ts">
-import store from "@/store";
 import { defineProps } from "vue";
 
 defineProps({

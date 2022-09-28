@@ -55,6 +55,9 @@ const onMessage = (event: MessageEvent) => {
       case MessageCode.HallPlayers:
         handleHallPlayersMessage(message.data);
         break;
+      case MessageCode.JoinRoom:
+        handleJoinRoomMessage(message.data);
+        break;
       default:
         console.log("Unknown message code");
     }
@@ -67,6 +70,10 @@ const onError = (event: Event) => {
   console.log(event);
 };
 
+function handleJoinRoomMessage(data: any) {
+  console.log("dta" + data);
+  store.dispatch(ActionCommands.ROOM_MESSAGES, data);
+}
 
 function handleAllRoomsMessage(data: any) {
   console.log(data);

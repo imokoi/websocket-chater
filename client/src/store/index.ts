@@ -11,6 +11,7 @@ interface State {
   allRooms: Array<Room>;
   hallPlayers: Array<Player>;
   roomPlayers: Array<Player>
+  roomMessages: Array<string>;
 }
 
 const state: State = {
@@ -19,6 +20,7 @@ const state: State = {
   allRooms: [] as Room[],
   hallPlayers: [] as Player[],
   roomPlayers: [] as Player[],
+  roomMessages: [] as string[],
 };
 
 const MutationCommands = {
@@ -27,6 +29,7 @@ const MutationCommands = {
   ALL_ROOMS: "allRoomsRefresh",
   HALL_PLAYERS: "hallPlayersRefresh",
   ROOM_PLAYERS: "roomPlayersRefresh",
+  ROOM_MESSAGES: "roomMessagesRefresh",
 };
 
 const mutations: MutationTree<State> = {
@@ -48,6 +51,10 @@ const mutations: MutationTree<State> = {
 
   roomPlayersRefresh(state: State, players: Player[]) {
     state.roomPlayers = players;
+  },
+
+  roomMessagesRefresh(state: State, message: string) {
+    state.roomMessages.push(message);
   }
 };
 
@@ -57,6 +64,7 @@ export const ActionCommands = {
   ALL_ROOMS: "allRoomsRefresh",
   HALL_PLAYERS: "hallPlayersRefresh",
   ROOM_PLAYERS: "roomPlayersRefresh",
+  ROOM_MESSAGES: "roomMessagesRefresh",
 };
 
 const actions: ActionTree<State, any> = {
@@ -78,6 +86,10 @@ const actions: ActionTree<State, any> = {
 
   roomPlayersRefresh(context: { commit: Commit }, players: Player[]) {
     context.commit(MutationCommands.ROOM_PLAYERS, players);
+  },
+
+  roomMessagesRefresh(context: { commit: Commit }, messages: string) {
+    context.commit(MutationCommands.ROOM_MESSAGES, messages);
   }
 };
 

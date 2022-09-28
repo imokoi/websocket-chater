@@ -24,6 +24,7 @@
           <ListView
             list-type="room"
             :room-list=store.state.allRooms
+            @join-room=joinRoom
           />
         </el-aside>
       </el-container>
@@ -62,6 +63,18 @@ const newRoom = () => {
     }));
   }
 };
+
+const joinRoom = (id: string) => {
+  console.log("join room" + id);
+  if (!ws) return;
+  if (ws.OPEN === 1) {
+    ws.send(JSON.stringify({
+      code: MessageCode.JoinRoom,
+      data: id
+    }));
+  }
+  router.push({ name: "chat-room" });
+}
 </script>
 
 <style lang="scss">

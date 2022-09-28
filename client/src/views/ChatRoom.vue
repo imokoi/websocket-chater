@@ -8,7 +8,9 @@
         </el-aside>
         <el-container class="main-container">
           <el-main class="message-box">
-            <MessageView />
+            <MessageView
+            :messages=store.state.roomMessages
+            />
           </el-main>
           <el-footer class="input-box">
             <InputBox />
@@ -21,6 +23,7 @@
 
 <script setup lang="ts">
 import InputBox from "@/components/InputBox.vue";
+import store from "@/store";
 import ListView from "../components/ListView.vue";
 import MessageView from "../components/MessageView.vue";
 </script>
