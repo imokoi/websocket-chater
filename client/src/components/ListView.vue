@@ -1,14 +1,41 @@
 <template>
   <div>
     <el-scrollbar class="scrollbar">
-      <p v-for="item in 50" :key="item" class="scrollbar-item">
-        {{ item }}
-      </p>
+      <div v-if="listType==='room'">
+        <p v-for="item in roomList" :key="item.id" class="scrollbar-item">
+          {{ item.id }}
+        </p>
+      </div>
+      <div v-else>
+        <p v-for="item in playerList" :key="item.id" class="scrollbar-item">
+          {{ item.name }}
+        </p>
+      </div>
     </el-scrollbar>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Player, Room } from "@/common/models";
+import { defineProps } from "vue";
+
+defineProps({
+  listType: {
+    type: String,
+    default: "room"
+  },
+  roomList: {
+    type: Array as () => Room[],
+    default: [] as Room[],
+    required: false
+  },
+  playerList: {
+    type: Array as () => Player[],
+    default: [] as Player[],
+    required: false
+  }
+});
+</script>
 
 <style lang="scss">
 .scrollbar {
@@ -18,6 +45,7 @@
 }
 
 .scrollbar-item {
+  font-size: 10px;
   display: flex;
   align-items: center;
   justify-content: center;

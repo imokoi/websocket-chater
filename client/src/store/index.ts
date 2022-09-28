@@ -1,3 +1,4 @@
+import { Room } from "@/common/models";
 import {
   ActionTree,
   Commit,
@@ -7,16 +8,19 @@ import {
 interface State {
   ws: WebSocket | null;
   messages: Array<string>;
+  allRooms: Array<Room>;
 }
 
 const state: State = {
   ws: null,
   messages: [] as string[],
+  allRooms: [] as Room[],
 };
 
 const MutationCommands = {
   SETUP_WS: "setupWebSocket",
   NEW_MESSAGE: "newMessage",
+  ALL_ROOMS: "allRoomsRefresh",
 };
 
 const mutations: MutationTree<State> = {
@@ -26,12 +30,17 @@ const mutations: MutationTree<State> = {
 
   newMessage(state: State, msg: string) {
     state.messages.push(msg);
+  },
+
+  allRoomsRefresh(state: State, rooms: Room[]) {
+    state.allRooms = rooms;
   }
 };
 
 export const ActionCommands = {
   SETUP_WS: "setupWebSocket",
   NEW_MESSAGE: "newMessage",
+  ALL_ROOMS: "allRoomsRefresh",
 };
 
 const actions: ActionTree<State, any> = {
@@ -41,6 +50,10 @@ const actions: ActionTree<State, any> = {
 
   newMessage(context: { commit: Commit }, msg: string) {
     context.commit(MutationCommands.NEW_MESSAGE, msg);
+  },
+
+  allRoomsRefresh(context: { commit: Commit }, rooms: Room[]) {
+    context.commit(MutationCommands.ALL_ROOMS, rooms);
   }
 };
 

@@ -80,10 +80,22 @@ func NewRoomHandler(s *melody.Session, message model.Message) {
 		return true
 	})
 
-	msgToClient, _ := model.NewMessage(common.NewRoom, room)
+	// send a success message to client
+	msgToClient, _ := model.NewMessage(common.Success, room)
 	SendToClient(s, msgToClient)
+	// send all rooms message to others to refresh rooms
 	msgToOthers, _ := model.NewMessage(common.AllRooms, rooms)
-	BroadcastOthers(s, msgToOthers)
+	BroadcastAll(msgToOthers)
+}
+
+func AllRoomsHandler(s *melody.Session, message model.Message) {
+	var rooms []model.Room
+	roomMap.Range(func(key, value interface{}) bool {
+		rooms = append(rooms, value.(model.Room))
+		return true
+	})
+	msg, _ := model.NewMessage(common.AllRooms, rooms)
+	SendToClient(s, msg)
 }
 
 // connectionHandler is called when a new websocket connection is established.

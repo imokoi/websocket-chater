@@ -9,14 +9,14 @@
 </template>
 
 <script setup lang="ts">
-import store from '@/store';
-import { defineProps } from 'vue';
+import store from "@/store";
+import { defineProps } from "vue";
 
 defineProps({
   messages: {
     type: Array,
-    default: [] as string[],
-  },
+    default: [] as string[]
+  }
 });
 </script>
 
@@ -26,6 +26,7 @@ defineProps({
   height: 100%;
   width: 100%;
 }
+
 .message-scrollbar-item {
   height: auto;
   margin: 10px;
