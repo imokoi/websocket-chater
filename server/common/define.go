@@ -10,5 +10,5 @@ const (
 	LeaveRoom
 	RoomChat
 	AllRooms
-	GetPlayers
+	HallPlayers
 )

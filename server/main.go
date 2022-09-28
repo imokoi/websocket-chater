@@ -66,7 +66,9 @@ func messageHandler(s *melody.Session, msg []byte) {
 	case common.NewRoom:
 		NewRoomHandler(s, message)
 	case common.AllRooms:
-		AllRoomsHandler(s, message)
+		AllRoomsHandler(s)
+	case common.HallPlayers:
+		HallPlayersHandler(s)
 	default:
 		errMsg, _ := model.NewErrorMessage(fmt.Errorf("unknown message code: %d", message.Code))
 		_ = s.Write(errMsg)

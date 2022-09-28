@@ -4,7 +4,10 @@
       <el-header><h2>Imokoi Chatting Hall</h2></el-header>
       <el-container>
         <el-aside class="side">
-          <ListView />
+          <ListView
+            list-type="player"
+            :player-list=store.state.hallPlayers
+           />
         </el-aside>
         <el-container class="main-container">
           <el-main class="message-box">
@@ -20,7 +23,7 @@
         <el-aside class="side">
           <ListView
             list-type="room"
-            :room-list=allRooms
+            :room-list=store.state.allRooms
           />
         </el-aside>
       </el-container>
@@ -38,9 +41,7 @@ import store from "@/store";
 import { ref } from "vue";
 
 const messages = ref([] as string[]);
-
 const ws = store.state.ws;
-const allRooms = store.state.allRooms;
 
 const sendMessage = (msg: string) => {
   if (!ws) return;

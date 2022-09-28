@@ -88,13 +88,23 @@ func NewRoomHandler(s *melody.Session, message model.Message) {
 	BroadcastAll(msgToOthers)
 }
 
-func AllRoomsHandler(s *melody.Session, message model.Message) {
+func AllRoomsHandler(s *melody.Session) {
 	var rooms []model.Room
 	roomMap.Range(func(key, value interface{}) bool {
 		rooms = append(rooms, value.(model.Room))
 		return true
 	})
 	msg, _ := model.NewMessage(common.AllRooms, rooms)
+	SendToClient(s, msg)
+}
+
+func HallPlayersHandler(s *melody.Session) {
+	var players []model.Player
+	playerMap.Range(func(key, value interface{}) bool {
+		players = append(players, value.(model.Player))
+		return true
+	})
+	msg, _ := model.NewMessage(common.HallPlayers, players)
 	SendToClient(s, msg)
 }
 
@@ -117,4 +127,7 @@ func connectionHandler(s *melody.Session) {
 	// send this message to other clients
 	toOthersMsg, _ := model.NewMessage(common.Success, fmt.Sprintf("%s has joined the server", player.Name))
 	BroadcastOthers(s, toOthersMsg)
+
+	AllRoomsHandler(s)
+	HallPlayersHandler(s)
 }

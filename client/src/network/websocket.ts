@@ -1,5 +1,5 @@
 import { MessageCode } from "@/common/define";
-import { Room } from "@/common/models";
+import { Player, Room } from "@/common/models";
 import store, { ActionCommands } from "@/store";
 
 const socketUrl = "ws://localhost:8888/ws";
@@ -28,6 +28,10 @@ const onOpen = (event: Event) => {
   ws.send(JSON.stringify({
     code: MessageCode.AllRooms
   }));
+
+  ws.send(JSON.stringify({
+    code: MessageCode.HallPlayers
+  }));
 };
 
 const onClose = (event: CloseEvent) => {
@@ -48,6 +52,9 @@ const onMessage = (event: MessageEvent) => {
       case MessageCode.AllRooms:
         handleAllRoomsMessage(message.data);
         break;
+      case MessageCode.HallPlayers:
+        handleHallPlayersMessage(message.data);
+        break;
       default:
         console.log("Unknown message code");
     }
@@ -66,4 +73,10 @@ function handleAllRoomsMessage(data: any) {
   const rooms: Room[] = data;
   console.log(rooms);
   store.dispatch(ActionCommands.ALL_ROOMS, rooms);
+}
+
+function handleHallPlayersMessage(data: any) {
+  const players: Player[] = data;
+  console.log(players);
+  store.dispatch(ActionCommands.HALL_PLAYERS, players);
 }
