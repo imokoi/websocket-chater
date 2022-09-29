@@ -40,9 +40,9 @@ func SendFail(s *melody.Session) {
 	}
 }
 
-func HallChatHandler(s *melody.Session, message model.Message) {
-	fmt.Println("HallChat")
-	msg, err := model.NewMessage(common.HallChat, message.Data)
+func HallChatRequestHandler(s *melody.Session, message model.Message) {
+	log.Infof("HallChatRequestHandler, message: %v", message)
+	msg, err := model.NewMessage(common.HallChatResponse, message.Data)
 	if err != nil {
 		log.Error(err)
 		return
@@ -52,19 +52,21 @@ func HallChatHandler(s *melody.Session, message model.Message) {
 	BroadcastOthers(s, msg)
 }
 
-// NewRoomHandler create a new room and broadcast to all clients
-func NewRoomHandler(s *melody.Session, message model.Message) {
+// NewRoomRequestHandler create a new room and broadcast to all clients
+func NewRoomRequestHandler(s *melody.Session, message model.Message) {
 	playerId, exist := s.Get("id")
 	if !exist {
 		log.Error("player id not exist")
 		return
 	}
+	// 1. get current player
 	player, ok := playerMap.Load(playerId)
 	if !ok {
 		log.Error("player not exist")
 		return
 	}
 
+	// 2. create a new room
 	roomId := uuid.NewString()
 	room := model.Room{
 		ID:             roomId,
@@ -81,35 +83,37 @@ func NewRoomHandler(s *melody.Session, message model.Message) {
 	})
 
 	// send a success message to client
-	msgToClient, _ := model.NewMessage(common.Success, room)
+	msgToClient, _ := model.NewMessage(common.NewRoomResponse, "create room success")
 	SendToClient(s, msgToClient)
 	// send all rooms message to others to refresh rooms
-	msgToOthers, _ := model.NewMessage(common.AllRooms, rooms)
+	msgToOthers, _ := model.NewMessage(common.AllRoomsResponse, rooms)
 	BroadcastAll(msgToOthers)
 }
 
-func AllRoomsHandler(s *melody.Session) {
+// AllRoomsRequestHandler is called when a client request all rooms
+func AllRoomsRequestHandler(s *melody.Session) {
 	var rooms []model.Room
 	roomMap.Range(func(key, value interface{}) bool {
 		rooms = append(rooms, value.(model.Room))
 		return true
 	})
-	msg, _ := model.NewMessage(common.AllRooms, rooms)
+	msg, _ := model.NewMessage(common.AllRoomsResponse, rooms)
 	SendToClient(s, msg)
 }
 
-func HallPlayersHandler(s *melody.Session) {
+// HallPlayersRequestHandler is called when a client request all players in hall
+func HallPlayersRequestHandler(s *melody.Session) {
 	var players []model.Player
 	playerMap.Range(func(key, value interface{}) bool {
 		players = append(players, value.(model.Player))
 		return true
 	})
-	msg, _ := model.NewMessage(common.HallPlayers, players)
+	msg, _ := model.NewMessage(common.HallPlayersResponse, players)
 	SendToClient(s, msg)
 }
 
 // joinRoomHandler is called when a client join a room
-func JoinRoomHandler(s *melody.Session, message model.Message) {
+func JoinRoomRequestHandler(s *melody.Session, message model.Message) {
 	playerId, exist := s.Get("id")
 	if !exist {
 		log.Error("player id not exist")
@@ -134,12 +138,12 @@ func JoinRoomHandler(s *melody.Session, message model.Message) {
 	roomMap.Store(roomId, room)
 
 	// send this message to other clients
-	toClientMsg, _ := model.NewMessage(common.JoinRoom, "join room success")
+	toClientMsg, _ := model.NewMessage(common.JoinRoomResponse, "join room success")
 	SendToClient(s, toClientMsg)
 
 	// send this message to other clients
 	for _, p := range room.Players {
-		toOthersMsg, _ := model.NewMessage(common.JoinRoom, fmt.Sprintf("%s has joined the room", player.(model.Player).Name))
+		toOthersMsg, _ := model.NewMessage(common.JoinRoomResponse, fmt.Sprintf("%s has joined the room", player.(model.Player).Name))
 		sessionValue, ok := sessionMap.Load(p.ID)
 		if !ok {
 			log.Error("session not exist")
@@ -170,6 +174,6 @@ func connectionHandler(s *melody.Session) {
 	toOthersMsg, _ := model.NewMessage(common.Success, fmt.Sprintf("%s has joined the server", player.Name))
 	BroadcastOthers(s, toOthersMsg)
 
-	AllRoomsHandler(s)
-	HallPlayersHandler(s)
+	AllRoomsRequestHandler(s)
+	HallPlayersRequestHandler(s)
 }

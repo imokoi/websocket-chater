@@ -11,7 +11,7 @@
         </el-aside>
         <el-container class="main-container">
           <el-main class="message-box">
-            <MessageView :messages=messages />
+            <MessageView :messages=store.state.messages />
           </el-main>
           <el-footer class="input-box">
             <InputBox
@@ -39,26 +39,22 @@ import ListView from "@/components/ListView.vue";
 import MessageView from "@/components/MessageView.vue";
 import router from "@/router";
 import store from "@/store";
-import { ref } from "vue";
 
-const messages = ref([] as string[]);
 const ws = store.state.ws;
 
 const sendMessage = (msg: string) => {
   if (!ws) return;
-  messages.value.push(msg);
   ws.send(JSON.stringify({
-    code: MessageCode.HallChat,
+    code: MessageCode.HallChatRequest,
     data: msg
   }));
 };
 
 const newRoom = () => {
-  router.push({ name: "chat-room" });
   if (!ws) return;
   if (ws.OPEN === 1) {
     ws.send(JSON.stringify({
-      code: MessageCode.NewRoom,
+      code: MessageCode.NewRoomRequest,
       data: ""
     }));
   }
@@ -69,7 +65,7 @@ const joinRoom = (id: string) => {
   if (!ws) return;
   if (ws.OPEN === 1) {
     ws.send(JSON.stringify({
-      code: MessageCode.JoinRoom,
+      code: MessageCode.JoinRoomRequest,
       data: id
     }));
   }

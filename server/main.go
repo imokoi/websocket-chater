@@ -61,16 +61,16 @@ func messageHandler(s *melody.Session, msg []byte) {
 	}
 
 	switch message.Code {
-	case common.HallChat:
-		HallChatHandler(s, message)
-	case common.NewRoom:
-		NewRoomHandler(s, message)
-	case common.AllRooms:
-		AllRoomsHandler(s)
-	case common.HallPlayers:
-		HallPlayersHandler(s)
-	case common.JoinRoom:
-		JoinRoomHandler(s, message)
+	case common.HallChatRequest:
+		HallChatRequestHandler(s, message)
+	case common.NewRoomRequest:
+		NewRoomRequestHandler(s, message)
+	case common.AllRoomsRequest:
+		AllRoomsRequestHandler(s)
+	case common.HallPlayersRequest:
+		HallPlayersRequestHandler(s)
+	case common.JoinRoomRequest:
+		JoinRoomRequestHandler(s, message)
 	default:
 		errMsg, _ := model.NewErrorMessage(fmt.Errorf("unknown message code: %d", message.Code))
 		_ = s.Write(errMsg)

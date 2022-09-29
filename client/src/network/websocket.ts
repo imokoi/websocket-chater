@@ -13,24 +13,17 @@ export function initWebsocket() {
   ws.onerror = onError;
 }
 
-// const getAllRooms = () => {
-//   if (!ws) return;
-//   ws.send(JSON.stringify({
-//     code: MessageCode.AllRooms
-//   }));
-// };
-
 const onOpen = (event: Event) => {
   console.log("Connected to server");
   const ws = store.state.ws;
   if (!ws) return;
   // get all rooms
   ws.send(JSON.stringify({
-    code: MessageCode.AllRooms
+    code: MessageCode.AllRoomsRequest
   }));
 
   ws.send(JSON.stringify({
-    code: MessageCode.HallPlayers
+    code: MessageCode.HallPlayersRequest
   }));
 };
 
@@ -43,19 +36,16 @@ const onMessage = (event: MessageEvent) => {
   try {
     const message = JSON.parse(event.data);
     switch (message.code) {
-      case MessageCode.HallChat:
+      case MessageCode.HallChatResponse:
         store.dispatch(ActionCommands.NEW_MESSAGE, message.data);
         break;
-      case MessageCode.Success:
-        store.dispatch(ActionCommands.NEW_MESSAGE, message.data);
-        break;
-      case MessageCode.AllRooms:
+      case MessageCode.AllRoomsResponse:
         handleAllRoomsMessage(message.data);
         break;
-      case MessageCode.HallPlayers:
+      case MessageCode.HallPlayersResponse:
         handleHallPlayersMessage(message.data);
         break;
-      case MessageCode.JoinRoom:
+      case MessageCode.JoinRoomResponse:
         handleJoinRoomMessage(message.data);
         break;
       default:
@@ -71,19 +61,16 @@ const onError = (event: Event) => {
 };
 
 function handleJoinRoomMessage(data: any) {
-  console.log("dta" + data);
   store.dispatch(ActionCommands.ROOM_MESSAGES, data);
 }
 
 function handleAllRoomsMessage(data: any) {
-  console.log(data);
+  console.log("get all room response, data: " + data);
   const rooms: Room[] = data;
-  console.log(rooms);
   store.dispatch(ActionCommands.ALL_ROOMS, rooms);
 }
 
 function handleHallPlayersMessage(data: any) {
   const players: Player[] = data;
-  console.log(players);
   store.dispatch(ActionCommands.HALL_PLAYERS, players);
 }

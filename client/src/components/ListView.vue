@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { Player, Room } from "@/common/models";
-import { defineProps } from "vue";
+import { defineEmits, defineProps } from "vue";
 
 defineProps({
   listType: {
