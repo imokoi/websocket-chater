@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="list-view-container">
     <div v-if="listType==='player'">Player List:</div>
     <div v-else>Room List: </div>
     <div v-if="listType==='room'">
@@ -43,6 +43,11 @@ const joinRoom = (id: string) => {
 </script>
 
 <style lang="scss">
+.list-view-container {
+  background-color: rgb(243, 243, 12);
+  height: 100%;
+  width: 100%;
+}
 .scrollbar {
   height: 100%;
   width: 80%;

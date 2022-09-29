@@ -48,6 +48,12 @@ const onMessage = (event: MessageEvent) => {
       case MessageCode.JoinRoomResponse:
         handleJoinRoomMessage(message.data);
         break;
+      case MessageCode.RoomPlayersResponse:
+        handleRoomPlayersResponse(message.data)
+        break;
+      case MessageCode.RoomChatResponse:
+        store.dispatch(ActionCommands.ROOM_MESSAGES, message.data);
+        break;
       default:
         console.log("Unknown message code");
     }
@@ -59,6 +65,11 @@ const onMessage = (event: MessageEvent) => {
 const onError = (event: Event) => {
   console.log(event);
 };
+
+function handleRoomPlayersResponse(data: any) {
+  const players: Player[] = data;
+  store.dispatch(ActionCommands.ROOM_PLAYERS, players);
+}
 
 function handleJoinRoomMessage(data: any) {
   store.dispatch(ActionCommands.ROOM_MESSAGES, data);

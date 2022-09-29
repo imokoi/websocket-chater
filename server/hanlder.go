@@ -112,6 +112,43 @@ func HallPlayersRequestHandler(s *melody.Session) {
 	SendToClient(s, msg)
 }
 
+func RoomChatRequestHandler(s *melody.Session, message model.Message) {
+	playerId, exist := s.Get("id")
+	if !exist {
+		log.Error("player id not exist")
+		return
+	}
+	player, ok := playerMap.Load(playerId)
+	if !ok {
+		log.Error("player not exist")
+		return
+	}
+
+	roomId := message.Data.(string)
+	roomValue, ok := roomMap.Load(roomId)
+	if !ok {
+		log.Error("room not exist")
+		return
+	}
+	room := roomValue.(model.Room)
+
+	// send this message to other clients
+	toClientMsg, _ := model.NewMessage(common.RoomChatResponse, "room chat success")
+	SendToClient(s, toClientMsg)
+
+	// send this message to other clients
+	for _, p := range room.Players {
+		toOthersMsg, _ := model.NewMessage(common.RoomChatResponse, fmt.Sprintf("%s has sent a message", player.(model.Player).Name))
+		sessionValue, ok := sessionMap.Load(p.ID)
+		if !ok {
+			log.Error("session not exist")
+			continue
+		}
+		session := sessionValue.(*melody.Session)
+		SendToClient(session, toOthersMsg)
+	}
+}
+
 // joinRoomHandler is called when a client join a room
 func JoinRoomRequestHandler(s *melody.Session, message model.Message) {
 	playerId, exist := s.Get("id")
@@ -152,6 +189,10 @@ func JoinRoomRequestHandler(s *melody.Session, message model.Message) {
 		session := sessionValue.(*melody.Session)
 		SendToClient(session, toOthersMsg)
 	}
+
+	// send all players in this room to client
+	refreshRoomPlayersMsg, _ := model.NewMessage(common.RoomPlayersResponse, room.Players)
+	BroadcastAll(refreshRoomPlayersMsg)
 }
 
 // connectionHandler is called when a new websocket connection is established.
