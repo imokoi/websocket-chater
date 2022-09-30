@@ -1,7 +1,7 @@
 <template>
   <div class="list-view-container">
     <div v-if="listType==='player'">Player List:</div>
-    <div v-else>Room List: </div>
+    <div v-else>Room List:</div>
     <div v-if="listType==='room'">
       <p v-for="item in roomList" :key="item.id" class="scrollbar-item">
         <el-button type="text" @click="joinRoom(item.id)">{{ item.id }}</el-button>
@@ -16,8 +16,8 @@
 </template>
 
 <script setup lang="ts">
-import { Player, Room } from "@/common/models";
-import { defineEmits, defineProps } from "vue";
+import {Player, Room} from "@/common/models";
+import {defineEmits, defineProps} from "vue";
 
 defineProps({
   listType: {
@@ -44,10 +44,11 @@ const joinRoom = (id: string) => {
 
 <style lang="scss">
 .list-view-container {
-  background-color: rgb(243, 243, 12);
   height: 100%;
   width: 100%;
+  border: #42b983 2px solid;
 }
+
 .scrollbar {
   height: 100%;
   width: 80%;

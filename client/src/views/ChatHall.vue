@@ -1,39 +1,43 @@
 <template>
   <div class="home">
     <el-container class="container">
-      <el-header><h2>Imokoi Chatting Hall</h2></el-header>
+      <el-header><h2>Chatting Hall</h2></el-header>
       <el-container>
-        <el-aside class="side">
-          <ListView
-            list-type="player"
-            :player-list=store.state.hallPlayers
-           />
-        </el-aside>
+        <div style="margin-top: 20px">
+          <el-aside class="side">
+            <ListView
+                list-type="player"
+                :player-list=store.state.hallPlayers
+            />
+          </el-aside>
+          <el-aside class="side" style="margin-top: 20px">
+            <ListView
+                list-type="room"
+                :room-list=store.state.allRooms
+                @join-room=joinRoom
+            />
+          </el-aside>
+        </div>
         <el-container class="main-container">
           <el-main class="message-box">
-            <MessageView :messages=store.state.messages />
+            <MessageView
+                :messages=store.state.messages
+            />
           </el-main>
           <el-footer class="input-box">
             <InputBox
-              @send-message=sendMessage
-              @new-room=newRoom
+                @send-message=sendMessage
+                @new-room=newRoom
             />
           </el-footer>
         </el-container>
-        <el-aside class="side">
-          <ListView
-            list-type="room"
-            :room-list=store.state.allRooms
-            @join-room=joinRoom
-          />
-        </el-aside>
       </el-container>
     </el-container>
   </div>
 </template>
 
 <script setup lang="ts">
-import { MessageCode } from "@/common/define";
+import {MessageCode} from "@/common/define";
 import InputBox from "@/components/InputBox.vue";
 import ListView from "@/components/ListView.vue";
 import MessageView from "@/components/MessageView.vue";
@@ -69,7 +73,7 @@ const joinRoom = (id: string) => {
     }));
   }
   store.dispatch(ActionCommands.SET_CURRENT_ROOM, id);
-  router.push({ name: "chat-room" });
+  router.push({name: "chat-room"});
 }
 </script>
 
