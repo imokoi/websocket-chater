@@ -1,4 +1,4 @@
-import { Player, Room } from "@/common/models";
+import {Player, Room} from "@/common/models";
 import {
   ActionTree,
   Commit,
@@ -10,7 +10,8 @@ interface State {
   messages: Array<string>;
   allRooms: Array<Room>;
   hallPlayers: Array<Player>;
-  roomPlayers: Array<Player>
+  currentRoomId: string;
+  roomPlayers: Array<Player>;
   roomMessages: Array<string>;
 }
 
@@ -19,6 +20,7 @@ const state: State = {
   messages: [] as string[],
   allRooms: [] as Room[],
   hallPlayers: [] as Player[],
+  currentRoomId: "",
   roomPlayers: [] as Player[],
   roomMessages: [] as string[],
 };
@@ -28,6 +30,7 @@ const MutationCommands = {
   NEW_MESSAGE: "newMessage",
   ALL_ROOMS: "allRoomsRefresh",
   HALL_PLAYERS: "hallPlayersRefresh",
+  SET_CURRENT_ROOM: "setCurrentRoom",
   ROOM_PLAYERS: "roomPlayersRefresh",
   ROOM_MESSAGES: "roomMessagesRefresh",
 };
@@ -43,6 +46,10 @@ const mutations: MutationTree<State> = {
 
   allRoomsRefresh(state: State, rooms: Room[]) {
     state.allRooms = rooms;
+  },
+
+  setCurrentRoom(state: State, roomId: string) {
+    state.currentRoomId = roomId;
   },
 
   hallPlayersRefresh(state: State, players: Player[]) {
@@ -63,6 +70,7 @@ export const ActionCommands = {
   NEW_MESSAGE: "newMessage",
   ALL_ROOMS: "allRoomsRefresh",
   HALL_PLAYERS: "hallPlayersRefresh",
+  SET_CURRENT_ROOM: "setCurrentRoom",
   ROOM_PLAYERS: "roomPlayersRefresh",
   ROOM_MESSAGES: "roomMessagesRefresh",
 };
@@ -78,6 +86,10 @@ const actions: ActionTree<State, any> = {
 
   allRoomsRefresh(context: { commit: Commit }, rooms: Room[]) {
     context.commit(MutationCommands.ALL_ROOMS, rooms);
+  },
+
+  setCurrentRoom(context: { commit: Commit }, roomId: string) {
+    context.commit(MutationCommands.SET_CURRENT_ROOM, roomId);
   },
 
   hallPlayersRefresh(context: { commit: Commit }, players: Player[]) {

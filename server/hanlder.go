@@ -112,7 +112,9 @@ func HallPlayersRequestHandler(s *melody.Session) {
 	SendToClient(s, msg)
 }
 
+// RoomChatRequestHandler is called when a client send a message in a room
 func RoomChatRequestHandler(s *melody.Session, message model.Message) {
+	fmt.Println("message", message)
 	playerId, exist := s.Get("id")
 	if !exist {
 		log.Error("player id not exist")
@@ -124,7 +126,7 @@ func RoomChatRequestHandler(s *melody.Session, message model.Message) {
 		return
 	}
 
-	roomId := message.Data.(string)
+	roomId := message.Data.(map[string]interface{})["id"].(string)
 	roomValue, ok := roomMap.Load(roomId)
 	if !ok {
 		log.Error("room not exist")
@@ -133,12 +135,8 @@ func RoomChatRequestHandler(s *melody.Session, message model.Message) {
 	room := roomValue.(model.Room)
 
 	// send this message to other clients
-	toClientMsg, _ := model.NewMessage(common.RoomChatResponse, "room chat success")
-	SendToClient(s, toClientMsg)
-
-	// send this message to other clients
 	for _, p := range room.Players {
-		toOthersMsg, _ := model.NewMessage(common.RoomChatResponse, fmt.Sprintf("%s has sent a message", player.(model.Player).Name))
+		toOthersMsg, _ := model.NewMessage(common.RoomChatResponse, fmt.Sprintf("%s %s", player.(model.Player).Name, message.Data.(map[string]interface{})["message"]))
 		sessionValue, ok := sessionMap.Load(p.ID)
 		if !ok {
 			log.Error("session not exist")
@@ -149,7 +147,7 @@ func RoomChatRequestHandler(s *melody.Session, message model.Message) {
 	}
 }
 
-// joinRoomHandler is called when a client join a room
+// JoinRoomRequestHandler joinRoomHandler is called when a client join a room
 func JoinRoomRequestHandler(s *melody.Session, message model.Message) {
 	playerId, exist := s.Get("id")
 	if !exist {

@@ -57,7 +57,7 @@ func messageHandler(s *melody.Session, msg []byte) {
 	var message model.Message
 	if err := json.Unmarshal(msg, &message); err != nil {
 		errMsg, _ := model.NewErrorMessage(err)
-		s.Write(errMsg)
+		_ = s.Write(errMsg)
 	}
 
 	switch message.Code {
@@ -71,6 +71,8 @@ func messageHandler(s *melody.Session, msg []byte) {
 		HallPlayersRequestHandler(s)
 	case common.JoinRoomRequest:
 		JoinRoomRequestHandler(s, message)
+	case common.RoomChatRequest:
+		RoomChatRequestHandler(s, message)
 	default:
 		errMsg, _ := model.NewErrorMessage(fmt.Errorf("unknown message code: %d", message.Code))
 		_ = s.Write(errMsg)

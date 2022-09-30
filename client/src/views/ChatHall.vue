@@ -38,7 +38,7 @@ import InputBox from "@/components/InputBox.vue";
 import ListView from "@/components/ListView.vue";
 import MessageView from "@/components/MessageView.vue";
 import router from "@/router";
-import store from "@/store";
+import store, {ActionCommands} from "@/store";
 
 const ws = store.state.ws;
 
@@ -61,7 +61,6 @@ const newRoom = () => {
 };
 
 const joinRoom = (id: string) => {
-  console.log("join room" + id);
   if (!ws) return;
   if (ws.OPEN === 1) {
     ws.send(JSON.stringify({
@@ -69,6 +68,7 @@ const joinRoom = (id: string) => {
       data: id
     }));
   }
+  store.dispatch(ActionCommands.SET_CURRENT_ROOM, id);
   router.push({ name: "chat-room" });
 }
 </script>

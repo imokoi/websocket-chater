@@ -39,7 +39,7 @@ const sendMessage = (msg: string) => {
   if (!ws) return;
   ws.send(JSON.stringify({
     code: MessageCode.RoomChatRequest,
-    data: msg
+    data: { id: store.state.currentRoomId, message: msg }
   }));
 }
 </script>
