@@ -2,7 +2,7 @@
   <div class="message-view-container">
     <el-scrollbar height="400px">
       <p v-for="(item, index) in messages" :key=index class="message-scrollbar-item">
-        {{ item }}
+        {{ item.time }}: ** {{ item.from }} ** : {{ item.content }}
       </p>
     </el-scrollbar>
   </div>
@@ -10,11 +10,12 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
+import {DialogMessage} from "@/common/models";
 
 defineProps({
   messages: {
     type: Array,
-    default: [] as string[]
+    default: [] as DialogMessage[]
   }
 });
 </script>

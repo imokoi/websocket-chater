@@ -1,4 +1,4 @@
-import {Player, Room} from "@/common/models";
+import {DialogMessage, Player, Room} from "@/common/models";
 import {
   ActionTree,
   Commit,
@@ -7,22 +7,22 @@ import {
 
 interface State {
   ws: WebSocket | null;
-  messages: Array<string>;
+  messages: Array<DialogMessage>;
   allRooms: Array<Room>;
   hallPlayers: Array<Player>;
   currentRoomId: string;
   roomPlayers: Array<Player>;
-  roomMessages: Array<string>;
+  roomMessages: Array<DialogMessage>;
 }
 
 const state: State = {
   ws: null,
-  messages: [] as string[],
+  messages: [] as DialogMessage[],
   allRooms: [] as Room[],
   hallPlayers: [] as Player[],
   currentRoomId: "",
   roomPlayers: [] as Player[],
-  roomMessages: [] as string[],
+  roomMessages: [] as DialogMessage[],
 };
 
 const MutationCommands = {
@@ -40,7 +40,7 @@ const mutations: MutationTree<State> = {
     state.ws = ws;
   },
 
-  newMessage(state: State, msg: string) {
+  newMessage(state: State, msg: DialogMessage) {
     state.messages.push(msg);
   },
 
@@ -60,7 +60,7 @@ const mutations: MutationTree<State> = {
     state.roomPlayers = players;
   },
 
-  roomMessagesRefresh(state: State, message: string) {
+  roomMessagesRefresh(state: State, message: DialogMessage) {
     state.roomMessages.push(message);
   }
 };
@@ -80,7 +80,7 @@ const actions: ActionTree<State, any> = {
     context.commit(MutationCommands.SETUP_WS, ws);
   },
 
-  newMessage(context: { commit: Commit }, msg: string) {
+  newMessage(context: { commit: Commit }, msg: DialogMessage) {
     context.commit(MutationCommands.NEW_MESSAGE, msg);
   },
 
@@ -100,7 +100,7 @@ const actions: ActionTree<State, any> = {
     context.commit(MutationCommands.ROOM_PLAYERS, players);
   },
 
-  roomMessagesRefresh(context: { commit: Commit }, messages: string) {
+  roomMessagesRefresh(context: { commit: Commit }, messages: DialogMessage) {
     context.commit(MutationCommands.ROOM_MESSAGES, messages);
   }
 };

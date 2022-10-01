@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"server/common"
 	"server/model"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/olahol/melody"
@@ -42,14 +43,29 @@ func SendFail(s *melody.Session) {
 
 func HallChatRequestHandler(s *melody.Session, message model.Message) {
 	log.Infof("HallChatRequestHandler, message: %v", message)
-	msg, err := model.NewMessage(common.HallChatResponse, message.Data)
+	playerId, exist := s.Get("id")
+	if !exist {
+		log.Error("player id not exist")
+		return
+	}
+	player, ok := playerMap.Load(playerId)
+	if !ok {
+		log.Error("player not exist")
+		return
+	}
+
+	dialogMsg := model.DialogMessage{
+		Time:    time.Now().Format("2006-01-02 15:04:05"),
+		From:    player.(model.Player).Name,
+		Content: message.Data.(string),
+	}
+	msg, err := model.NewMessage(common.HallChatResponse, dialogMsg)
 	if err != nil {
 		log.Error(err)
 		return
 	}
 
-	SendToClient(s, msg)
-	BroadcastOthers(s, msg)
+	BroadcastAll(msg)
 }
 
 // NewRoomRequestHandler create a new room and broadcast to all clients
@@ -71,7 +87,7 @@ func NewRoomRequestHandler(s *melody.Session, message model.Message) {
 	room := model.Room{
 		ID:             roomId,
 		DialogMessages: []model.DialogMessage{},
-		Players:        []model.Player{player.(model.Player)},
+		Players:        []model.Player{},
 		Host:           player.(model.Player),
 	}
 	roomMap.Store(roomId, room)
@@ -82,8 +98,14 @@ func NewRoomRequestHandler(s *melody.Session, message model.Message) {
 		return true
 	})
 
+	// 3. broadcast to all clients
+	dialogMsg := model.DialogMessage{
+		Time:    time.Now().Format("2006-01-02 15:04:05"),
+		From:    player.(model.Player).Name,
+		Content: fmt.Sprintf("create a new room: %s", roomId),
+	}
 	// send a success message to client
-	msgToClient, _ := model.NewMessage(common.NewRoomResponse, "create room success")
+	msgToClient, _ := model.NewMessage(common.NewRoomResponse, dialogMsg)
 	SendToClient(s, msgToClient)
 	// send all rooms message to others to refresh rooms
 	msgToOthers, _ := model.NewMessage(common.AllRoomsResponse, rooms)
@@ -135,8 +157,13 @@ func RoomChatRequestHandler(s *melody.Session, message model.Message) {
 	room := roomValue.(model.Room)
 
 	// send this message to other clients
+	dialogMsg := model.DialogMessage{
+		Time:    time.Now().Format("2006-01-02 15:04:05"),
+		From:    player.(model.Player).Name,
+		Content: message.Data.(map[string]interface{})["message"].(string),
+	}
 	for _, p := range room.Players {
-		toOthersMsg, _ := model.NewMessage(common.RoomChatResponse, fmt.Sprintf("%s %s", player.(model.Player).Name, message.Data.(map[string]interface{})["message"]))
+		toOthersMsg, _ := model.NewMessage(common.RoomChatResponse, dialogMsg)
 		sessionValue, ok := sessionMap.Load(p.ID)
 		if !ok {
 			log.Error("session not exist")
@@ -149,6 +176,7 @@ func RoomChatRequestHandler(s *melody.Session, message model.Message) {
 
 // JoinRoomRequestHandler joinRoomHandler is called when a client join a room
 func JoinRoomRequestHandler(s *melody.Session, message model.Message) {
+	fmt.Println("join room")
 	playerId, exist := s.Get("id")
 	if !exist {
 		log.Error("player id not exist")
@@ -173,12 +201,15 @@ func JoinRoomRequestHandler(s *melody.Session, message model.Message) {
 	roomMap.Store(roomId, room)
 
 	// send this message to other clients
-	toClientMsg, _ := model.NewMessage(common.JoinRoomResponse, "join room success")
-	SendToClient(s, toClientMsg)
+	dialogMsg := model.DialogMessage{
+		Time:    time.Now().Format("2006-01-02 15:04:05"),
+		From:    player.(model.Player).Name,
+		Content: fmt.Sprintf("join room: %s", roomId),
+	}
 
 	// send this message to other clients
 	for _, p := range room.Players {
-		toOthersMsg, _ := model.NewMessage(common.JoinRoomResponse, fmt.Sprintf("%s has joined the room", player.(model.Player).Name))
+		toOthersMsg, _ := model.NewMessage(common.JoinRoomResponse, dialogMsg)
 		sessionValue, ok := sessionMap.Load(p.ID)
 		if !ok {
 			log.Error("session not exist")

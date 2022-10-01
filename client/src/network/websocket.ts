@@ -66,6 +66,12 @@ const onError = (event: Event) => {
   console.log(event);
 };
 
+function handleHallChatResponse(data: any) {
+  console.log(data)
+  const dialogMessage = data;
+  store.dispatch(ActionCommands.NEW_MESSAGE, data);
+}
+
 function handleRoomPlayersResponse(data: any) {
   const players: Player[] = data;
   store.dispatch(ActionCommands.ROOM_PLAYERS, players);
