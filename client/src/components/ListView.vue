@@ -44,15 +44,8 @@ const joinRoom = (id: string) => {
 
 <style lang="scss">
 .list-view-container {
-  height: 100%;
-  width: 100%;
-  border: #42b983 2px solid;
-}
-
-.scrollbar {
-  height: 100%;
-  width: 80%;
-  background-color: antiquewhite;
+  height: 95%;
+  width: 95%;
 }
 
 .scrollbar-item {

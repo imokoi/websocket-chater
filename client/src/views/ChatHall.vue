@@ -1,24 +1,23 @@
 <template>
   <div class="home">
+    <h2>Chatting Hall</h2>
     <el-container class="container">
-      <el-header><h2>Chatting Hall</h2></el-header>
-      <el-container>
-        <div style="margin-top: 20px">
-          <el-aside class="side">
+        <div class="side-box">
+          <div class="side">
             <ListView
                 list-type="player"
                 :player-list=store.state.hallPlayers
             />
-          </el-aside>
-          <el-aside class="side" style="margin-top: 20px">
+          </div>
+          <div class="side" style="margin-top: 20px">
             <ListView
                 list-type="room"
                 :room-list=store.state.allRooms
                 @join-room=joinRoom
             />
-          </el-aside>
+          </div>
         </div>
-        <el-container class="main-container">
+        <div class="main-container">
           <el-main class="message-box">
             <MessageView
                 :messages=store.state.messages
@@ -30,8 +29,7 @@
                 @new-room=newRoom
             />
           </el-footer>
-        </el-container>
-      </el-container>
+        </div>
     </el-container>
   </div>
 </template>
@@ -81,33 +79,50 @@ const joinRoom = (id: string) => {
 .home {
   height: 100%;
   width: 100%;
-}
-
-.container {
-  height: 100%;
-  width: 100%;
-
-  .side {
-    height: 400px;
-    width: 200px;
-  }
-}
-
-.main-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  height: 400px;
+  background: antiquewhite;
 
-  .message-box {
-    flex: 2;
-    overflow-y: scroll;
-  }
-
-  .input-box {
+  .container {
+    height: 80%;
+    width: 100%;
     display: flex;
-    height: 100px;
-    background-color: aliceblue;
+    flex-direction: row;
+    justify-content: center;
+
+    .side-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      .side {
+        height: 40%;
+        border: #42b983 2px solid;
+        overflow: auto;
+      }
+    }
+
+    .main-container {
+      height: 83%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-left: 10px;
+      width: 60%;
+
+      .message-box {
+        width: 100%;
+        border: #42b983 2px solid;
+        overflow: auto;
+      }
+
+      .input-box {
+        border: #42b983 2px solid;
+        width: 100%;
+        margin-top: 30px;
+        align-self: center;
+        display: flex;
+      }
+    }
   }
 }
 </style>

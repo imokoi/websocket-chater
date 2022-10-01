@@ -21,7 +21,6 @@ defineProps({
 
 <style lang="scss">
 .message-view-container {
-  background-color: beige;
   height: 100%;
   width: 100%;
 }
@@ -31,6 +30,5 @@ defineProps({
   margin: 10px;
   text-align: left;
   border-radius: 4px;
-  background-color: aliceblue;
 }
 </style>

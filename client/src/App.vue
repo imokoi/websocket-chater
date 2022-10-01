@@ -1,9 +1,4 @@
 <template>
-  <nav>
-    <router-link to="/">Chat Hall</router-link>
-    |
-    <router-link to="/chat-room">Chat room</router-link>
-  </nav>
   <router-view/>
 </template>
 
@@ -28,6 +23,7 @@ html,
 body {
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 nav {

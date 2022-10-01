@@ -1,28 +1,27 @@
 <template>
   <div class="home">
+    <h2>Chatting Room</h2>
     <el-container class="container">
-      <el-header><h2>Chatting Room</h2></el-header>
-      <el-container>
-        <el-aside class="side">
-          <div>hello</div>
+      <div class="side-box">
+        <div class="side">
           <ListView
-          list-type="player"
-          :player-list=store.state.roomPlayers
+              list-type="player"
+              :player-list=store.state.roomPlayers
           />
-        </el-aside>
-        <el-container class="main-container">
-          <el-main class="message-box">
-            <MessageView
-            :messages=store.state.roomMessages
-            />
-          </el-main>
-          <el-footer class="input-box">
-            <InputBox
-            @send-message=sendMessage
-            />
-          </el-footer>
-        </el-container>
-      </el-container>
+        </div>
+      </div>
+      <div class="main-container">
+        <el-main class="message-box">
+          <MessageView
+              :messages=store.state.roomMessages
+          />
+        </el-main>
+        <el-footer class="input-box">
+          <InputBox
+              @send-message=sendMessage
+          />
+        </el-footer>
+      </div>
     </el-container>
   </div>
 </template>
@@ -72,7 +71,6 @@ const sendMessage = (msg: string) => {
   .input-box {
     display: flex;
     height: 100px;
-    background-color: aliceblue;
   }
 }
 </style>
