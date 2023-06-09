@@ -49,7 +49,7 @@ const onMessage = (event: MessageEvent) => {
         handleJoinRoomMessage(message.data);
         break;
       case MessageCode.RoomPlayersResponse:
-        handleRoomPlayersResponse(message.data)
+        handleRoomPlayersResponse(message.data);
         break;
       case MessageCode.RoomChatResponse:
         store.dispatch(ActionCommands.ROOM_MESSAGES, message.data);
@@ -67,7 +67,7 @@ const onError = (event: Event) => {
 };
 
 function handleHallChatResponse(data: any) {
-  console.log(data)
+  console.log(data);
   const dialogMessage = data;
   store.dispatch(ActionCommands.NEW_MESSAGE, data);
 }
